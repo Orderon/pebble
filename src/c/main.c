@@ -4,7 +4,7 @@ Template for TP of the course "System Engineering" 2016, EPFL
 Authors: Flavien Bardyn & Martin Savary
 Version: 1.0
 Date: 10.08.2016
-
+modification pour lucie
 Use this "HelloWorld" example as basis to code your own app, which should at least 
 count steps precisely based on accelerometer data. 
 
