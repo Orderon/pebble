@@ -78,7 +78,7 @@ void down_single_click_handler(ClickRecognizerRef recognizer, void *context) {
     counter += 1;
   draw_counter(); 
 }
-void down_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+void up_single_click_handler(ClickRecognizerRef recognizer, void *context) {
  // ... called on single click ...
   Window *window = (Window *)context;
   ButtonId buttonId = click_recognizer_get_button_id(recognizer);
