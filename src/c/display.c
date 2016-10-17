@@ -60,7 +60,14 @@ static void destroy_ui(void) {
   gbitmap_destroy(s_res_play);
 }
 // END AUTO-GENERATED UI CODE
-
+void draw_counter(){
+  
+    static char results[60];
+  snprintf(results,60, "Count: %d",counter);
+  
+    text_layer_set_text(s_textlayer_2,results);
+  
+}
 static void handle_window_unload(Window* window) {
   destroy_ui();
 }
@@ -69,46 +76,42 @@ void down_single_click_handler(ClickRecognizerRef recognizer, void *context) {
   Window *window = (Window *)context;
   ButtonId buttonId = click_recognizer_get_button_id(recognizer);
     counter += 1;
-    static char results[60];
-  snprintf(results,60, "Count: %d",counter);
-
-    text_layer_set_text(s_textlayer_2,results);
-  
-  
+  draw_counter(); 
+}
+void down_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+ // ... called on single click ...
+  Window *window = (Window *)context;
+  ButtonId buttonId = click_recognizer_get_button_id(recognizer);
+    counter += 1;
+  draw_counter(); 
 }
 void select_single_click_handler(ClickRecognizerRef recognizer, void *context) {
- // ... called on single click, and every 1000ms of being held ... on s'en fiche!
+ // ... called on single click, and every 1000ms of being held ... on s'en fiche!  
+  counter += 1;
+  draw_counter();
   Window *window = (Window *)context;
 }
 
-void select_multi_click_handler(ClickRecognizerRef recognizer, void *context) {
-//  ... called for multi-clicks ... on s'en fiche! 
-  Window *window = (Window *)context;
-  const uint16_t count = click_number_of_clicks_counted(recognizer);
-}
 
 void select_long_click_handler(ClickRecognizerRef recognizer, void *context) {
 //  ... called on long click start ... on s'en fiche! 
   counter = 0;
+  static char results[60];
+  snprintf(results,60, "Count: %d",counter);
+  
+    text_layer_set_text(s_textlayer_2,results);
   Window *window = (Window *)context;
 }
 
 void select_long_click_release_handler(ClickRecognizerRef recognizer, void *context) {
  // ... called when long click is released ... on s'en fiche! 
-  
-    static char results[60];
-  snprintf(results,60, "Blablabla: %d",counter);
-
-    text_layer_set_text(s_textlayer_2,results);
-  Window *window = (Window *)context;
+    Window *window = (Window *)context;
 }
 void config_provider(Window *window) {
  // single click / repeat-on-hold config:
   window_single_click_subscribe(BUTTON_ID_DOWN, down_single_click_handler);
+  window_single_click_subscribe(BUTTON_ID_UP, up_single_click_handler);
   window_single_repeating_click_subscribe(BUTTON_ID_SELECT, 1000, select_single_click_handler);
-
-  // multi click config:
-  window_multi_click_subscribe(BUTTON_ID_SELECT, 2, 10, 0, true, select_multi_click_handler);
 
   // long click config:
   window_long_click_subscribe(BUTTON_ID_SELECT, 700, select_long_click_handler, select_long_click_release_handler);
