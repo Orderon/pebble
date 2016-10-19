@@ -2,6 +2,10 @@
 #include "display.h"
 
 static uint16_t counter;
+static uint16_t battery=24;
+static BitmapLayer *batterie;
+static BitmapLayer *batterie_end;
+static BitmapLayer *batterie_start;
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -25,7 +29,7 @@ static void initialise_ui(void) {
   s_res_stop = gbitmap_create_with_resource(RESOURCE_ID_stop);
   s_res_play = gbitmap_create_with_resource(RESOURCE_ID_play);
   // s_textlayer_1
-  s_textlayer_1 = text_layer_create(GRect(-17, 1, 130, 28));
+  s_textlayer_1 = text_layer_create(GRect(-18, 20, 130, 28));
   text_layer_set_background_color(s_textlayer_1, GColorClear);
   text_layer_set_text_color(s_textlayer_1, GColorWhite);
   text_layer_set_text(s_textlayer_1, "Pedometer");
@@ -60,6 +64,63 @@ static void destroy_ui(void) {
   gbitmap_destroy(s_res_play);
 }
 // END AUTO-GENERATED UI CODE
+void draw_battery(){
+  //overdraw everything with black
+    batterie = bitmap_layer_create(GRect(2, 2, 34, 20));
+    bitmap_layer_set_background_color(batterie, GColorBlack);
+    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+    // battery_end
+  batterie_end = bitmap_layer_create(GRect(34, 8, 6, 8));
+  bitmap_layer_set_background_color(batterie_end, GColorWhite);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)batterie_end);
+   //battery start
+  batterie_start = bitmap_layer_create(GRect(2, 2, 2, 20));
+  bitmap_layer_set_background_color(batterie_start, GColorWhite);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)batterie_start);
+  
+  // battery
+  if(battery>87){ //display full battery
+    batterie = bitmap_layer_create(GRect(2, 2, 32, 20));
+    bitmap_layer_set_background_color(batterie, GColorWhite);
+    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+  }else if(battery > 62){ //display 3/4 battery
+    batterie = bitmap_layer_create(GRect(10, 2, 24, 20));
+    bitmap_layer_set_background_color(batterie, GColorWhite);
+    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+    
+  }else if(battery > 37){ //display 1/2 battery
+    batterie = bitmap_layer_create(GRect(18, 2, 16, 20));
+    bitmap_layer_set_background_color(batterie, GColorWhite);
+    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+    
+  }else if(battery > 12) { //display 1/4 battery
+    batterie = bitmap_layer_create(GRect(26, 2, 8, 20));
+    bitmap_layer_set_background_color(batterie, GColorWhite);
+    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+  } else{                   //display (almost) no battery
+    batterie = bitmap_layer_create(GRect(32, 2, 2, 20));
+    bitmap_layer_set_background_color(batterie, GColorWhite);
+    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+    
+  }
+  
+}
+
+static void battery_handler(BatteryChargeState charge) {
+  battery = charge.charge_percent;
+  //---mark the drawing layer as dirty so as to force
+  // a redraw---
+  draw_battery();
+  layer_mark_dirty((Layer *)batterie);
+}
+void update(){
+  BatteryChargeState state = battery_state_service_peek();
+  draw_battery();
+  
+  static char results[60];
+  snprintf(results,60, "Count: %d",counter);
+  text_layer_set_text(s_textlayer_2,results);
+}
 void draw_counter(){
   
     static char results[60];
@@ -112,6 +173,8 @@ void config_provider(Window *window) {
   window_single_click_subscribe(BUTTON_ID_DOWN, down_single_click_handler);
   window_single_click_subscribe(BUTTON_ID_UP, up_single_click_handler);
   window_single_repeating_click_subscribe(BUTTON_ID_SELECT, 1000, select_single_click_handler);
+  
+  battery_state_service_subscribe(battery_handler);
 
   // long click config:
   window_long_click_subscribe(BUTTON_ID_SELECT, 700, select_long_click_handler, select_long_click_release_handler);
@@ -119,6 +182,7 @@ void config_provider(Window *window) {
 
 void show_display(void) {
   initialise_ui();
+  update();
   window_set_click_config_provider(s_window, (ClickConfigProvider) config_provider);
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
