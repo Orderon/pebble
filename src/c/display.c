@@ -79,30 +79,11 @@ void draw_battery(){
   layer_add_child(window_get_root_layer(s_window), (Layer *)batterie_start);
   
   // battery
-  if(battery>87){ //display full battery
-    batterie = bitmap_layer_create(GRect(2, 2, 32, 20));
+    int length = (31*battery)/100+1;
+    batterie = bitmap_layer_create(GRect(34-length, 2, length, 20));
     bitmap_layer_set_background_color(batterie, GColorWhite);
     layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
-  }else if(battery > 62){ //display 3/4 battery
-    batterie = bitmap_layer_create(GRect(10, 2, 24, 20));
-    bitmap_layer_set_background_color(batterie, GColorWhite);
-    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
-    
-  }else if(battery > 37){ //display 1/2 battery
-    batterie = bitmap_layer_create(GRect(18, 2, 16, 20));
-    bitmap_layer_set_background_color(batterie, GColorWhite);
-    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
-    
-  }else if(battery > 12) { //display 1/4 battery
-    batterie = bitmap_layer_create(GRect(26, 2, 8, 20));
-    bitmap_layer_set_background_color(batterie, GColorWhite);
-    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
-  } else{                   //display (almost) no battery
-    batterie = bitmap_layer_create(GRect(32, 2, 2, 20));
-    bitmap_layer_set_background_color(batterie, GColorWhite);
-    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
-    
-  }
+ 
   
 }
 

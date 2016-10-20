@@ -24,6 +24,7 @@ Good luck and have fun!
 // Include Pebble library
 #include <pebble.h>
 #include "src/c/display.h"
+#include "src/c/fft.h"
 
 // Declare the main window and two text layers
 Window *main_window;
