@@ -6,24 +6,29 @@ static int n_steps;
 static double distance;
 static double filter1_History[7];
   
-void handle_acc_data(Data_Acc acc){
-  n_steps += find_nb_steps(acc);
+void handle_acc_data(Data_Acc * Acc[3]){
+  n_steps += find_nb_steps(Acc);
   distance += n_steps*DIST_PER_STEP;
 }
 
 
-static int find_nb_steps(Data_Acc acc){
+static int find_nb_steps(Data_Acc * Acc[3]){
   int nb_steps = 0;
   int time=0;
+  double x,y,z,norm;
   for(;time<25;time++){
-    //do filter 1
-    for(int i=0;i<3;i++){
-      filter_lowpass(acc, i, time);
-    }
-    
-    //do norm
-    
+
+  //  x=  filter_lowpass(acc, 0, time);
+ //   y=  filter_lowpass(acc, 1, time);
+ //  z=  filter_lowpass(acc, 2, time);
+    x=y=z= Acc[X]->last_acc[0];
+    //do norm^2
+   norm = x*x+y*y+z*z;
+   x= norm;
     //do filter 2
+    
+    
+    
     }
   //findpeaks
   
@@ -31,7 +36,7 @@ static int find_nb_steps(Data_Acc acc){
   return nb_steps;
 }
  //x: 0, y:1, z:2
-static double filter_lowpass(Data_Acc acc,int xyz,int time){
+static double filter_lowpass(Data_Acc * Acc[3],int xyz,int time){
  double          
   a1= 0.0244,
   a2 = 0.1465,
@@ -55,7 +60,7 @@ return a1; /** data_acc_get_samples(&acc, time, xyz) + a2 * data_acc_get_samples
   a7 * data_acc_get_samples(&acc, time+6, xyz) - b1 * filter1_History[1] - b2 * filter1_History[2];*/
 }
 
-static double filter_bandpass(Data_Acc acc,int time){
+static double filter_bandpass(Data_Acc * Acc[3],int time){
  double          
   a1= 0.0103,
   a3 = -0.0619,
@@ -74,7 +79,7 @@ static double filter_bandpass(Data_Acc acc,int time){
   b8 = 5.2693,
   b9 = -1.7666,
   b10 = 0.4227,
-  b11 = -0.0645
+  b11 = -0.0645,
   b12 = 0.0050;
   
   
@@ -86,5 +91,7 @@ return a1; /** data_acc_get_samples(&acc, time, xyz) + a2 * data_acc_get_samples
 }
 
 static void findPeaks(void){
+  
+  
   
 }

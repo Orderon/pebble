@@ -8,9 +8,9 @@ static int n_steps;
 static double distance;
 static double filter1_History[7];
   
-void handle_acc_data(Data_Acc acc);
-static int find_nb_steps(Data_Acc acc);
-static double filter_lowpass(Data_Acc acc,int xyz,int time);
-static double filter_bandpass(Data_Acc acc,int time);
+void handle_acc_data(Data_Acc * Acc[3]);
+static int find_nb_steps(Data_Acc * Acc[3]);
+static double filter_lowpass(Data_Acc * Acc[3],int xyz,int time);
+static double filter_bandpass(Data_Acc * Acc[3],int time);
 
 static void findPeaks(void);
