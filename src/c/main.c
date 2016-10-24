@@ -24,7 +24,6 @@ Good luck and have fun!
 // Include Pebble library
 #include <pebble.h>
 #include "src/c/display.h"
-#include "src/c/fft.h"
 
 // Declare the main window and two text layers
 Window *main_window;
@@ -39,18 +38,10 @@ static void accel_data_handler(AccelData *data, uint32_t num_samples)
     int16_t y = data[0].y;
     int16_t z = data[0].z;
   
-    // tab of chars to print the results on the watch
-    static char results[60];
-  
-    // Print the results in the log
-    APP_LOG(APP_LOG_LEVEL_INFO, "x: %d, y: %d, z: %d", x, y, z);
-  
-    // Print the results on the watch
-    snprintf(results, 60, "x: %d, y: %d, z: %d", x, y, z);
-    text_layer_set_text(helloWorld_layer, results);
 }
-void click_config_provider(void *context) {
-}
+
+
+
 
 // Init function called when app is launched
 static void init(void) {
@@ -62,31 +53,9 @@ static void init(void) {
     // Define accelerometer sampling rate  
     accel_service_set_sampling_rate(ACCEL_SAMPLING_25HZ);
   
-  	// Create main Window element and assign to pointer
-  	main_window = window_create();
-    Layer *window_layer = window_get_root_layer(main_window);  
-
-		// Create background Layer
-		background_layer = text_layer_create(GRect( 0, 0, 144, 168));
-		// Setup background layer color (black)
-		text_layer_set_background_color(background_layer, GColorBlack);
-
-		// Create text Layer
-		helloWorld_layer = text_layer_create(GRect( 20, 65, 100, 20));
-		// Setup layer Information
-		text_layer_set_background_color(helloWorld_layer, GColorClear);
-		text_layer_set_text_color(helloWorld_layer, GColorWhite);	
-		text_layer_set_font(helloWorld_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
-  	text_layer_set_text_alignment(helloWorld_layer, GTextAlignmentCenter);
-
-  	// Add layers as childs layers to the Window's root layer
-    layer_add_child(window_layer, text_layer_get_layer(background_layer));
-	  layer_add_child(window_layer, text_layer_get_layer(helloWorld_layer));
- 
-    
-  	// Show the window on the watch, with animated = true
-  	window_stack_push(main_window, true);
+    // Show the user Interface display
     show_display();
+  
     // Add a logging meassage (for debug)
 	  APP_LOG(APP_LOG_LEVEL_DEBUG, "Just write my first app!");
 }

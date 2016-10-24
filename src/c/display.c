@@ -89,12 +89,13 @@ void draw_battery(){
 
 static void battery_handler(BatteryChargeState charge) {
   battery = charge.charge_percent;
+  draw_battery();
   //---mark the drawing layer as dirty so as to force
   // a redraw---
-  draw_battery();
   layer_mark_dirty((Layer *)batterie);
 }
-void update(){
+
+void update_counter(){
   BatteryChargeState state = battery_state_service_peek();
   draw_battery();
   
@@ -102,6 +103,7 @@ void update(){
   snprintf(results,60, "Count: %d",counter);
   text_layer_set_text(s_textlayer_2,results);
 }
+
 void draw_counter(){
   
     static char results[60];
@@ -113,6 +115,7 @@ void draw_counter(){
 static void handle_window_unload(Window* window) {
   destroy_ui();
 }
+
 void down_single_click_handler(ClickRecognizerRef recognizer, void *context) {
  // ... called on single click ...
   Window *window = (Window *)context;
@@ -120,6 +123,7 @@ void down_single_click_handler(ClickRecognizerRef recognizer, void *context) {
     counter += 1;
   draw_counter(); 
 }
+
 void up_single_click_handler(ClickRecognizerRef recognizer, void *context) {
  // ... called on single click ...
   Window *window = (Window *)context;
@@ -127,13 +131,13 @@ void up_single_click_handler(ClickRecognizerRef recognizer, void *context) {
     counter += 1;
   draw_counter(); 
 }
+
 void select_single_click_handler(ClickRecognizerRef recognizer, void *context) {
  // ... called on single click, and every 1000ms of being held ... on s'en fiche!  
   counter += 1;
   draw_counter();
   Window *window = (Window *)context;
 }
-
 
 void select_long_click_handler(ClickRecognizerRef recognizer, void *context) {
 //  ... called on long click start ... on s'en fiche! 
@@ -163,7 +167,7 @@ void config_provider(Window *window) {
 
 void show_display(void) {
   initialise_ui();
-  update();
+  update_counter();
   window_set_click_config_provider(s_window, (ClickConfigProvider) config_provider);
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
