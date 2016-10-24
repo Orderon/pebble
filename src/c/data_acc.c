@@ -27,6 +27,13 @@ void data_norm_init(Data_Norm * Norm)
 void data_acc_update_acc(AccelData * Data, Data_Acc * Acc[3], uint32_t num_samples)
 {
   uint32_t i = 0;
+  for (i = 0; i <= 6; i++)
+  {
+    Acc[X]->last_acc[6-1-i] =  Acc[X]->new_acc[num_samples-1-i];
+    Acc[Y]->last_acc[6-1-i] =  Acc[Y]->new_acc[num_samples-1-i];
+    Acc[Z]->last_acc[6-1-i] =  Acc[Z]->new_acc[num_samples-1-i];
+  }
+  
   for (i = 0; i <= num_samples - 1; i++)
   {
     // Enregistrement des accélérations
@@ -34,9 +41,4 @@ void data_acc_update_acc(AccelData * Data, Data_Acc * Acc[3], uint32_t num_sampl
     Acc[Y]->new_acc[i] = Data[i].y;
     Acc[Z]->new_acc[i] = Data[i].z;
   }
-}
-
-int data_acc_get_samples_x(Data_Acc * Acc, int indice, int indice_coord)
-{
-   return 1;
 }
