@@ -24,27 +24,25 @@ Good luck and have fun!
 // Include Pebble library
 #include <pebble.h>
 #include "src/c/display.h"
+#include "src/c/data_acc.h"
 
 // Declare the main window and two text layers
 Window *main_window;
 TextLayer *background_layer;
 TextLayer *helloWorld_layer;
+ static Data_Acc* Acc;
 
 // Callback funtcion of the accelerometer
-static void accel_data_handler(AccelData *data, uint32_t num_samples)
+static void accel_data_handler(AccelData * Data, uint32_t num_samples)
 {
-    // Read sample 0's x, y, and z values
-    int16_t x = data[0].x;
-    int16_t y = data[0].y;
-    int16_t z = data[0].z;
-  
+    data_acc_update_acc(Data,Acc,num_samples);
 }
 
 
 
 
 // Init function called when app is launched
-static void init(void) {
+static void init(Data_Acc * Acc) {
 
     // Number of samples needed to call the accelerometer callback function
     uint32_t num_samples = 25;
@@ -52,6 +50,9 @@ static void init(void) {
     accel_data_service_subscribe(num_samples, accel_data_handler);
     // Define accelerometer sampling rate  
     accel_service_set_sampling_rate(ACCEL_SAMPLING_25HZ);
+  
+    // Init. the acceleration datas
+    data_acc_init(Acc);
   
     // Show the user Interface display
     show_display();
@@ -72,7 +73,7 @@ static void deinit(void) {
 }
 
 int main(void) {
-    init();
+    init(Acc);
     app_event_loop();
     deinit();
 }

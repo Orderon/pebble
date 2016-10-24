@@ -6,7 +6,7 @@ void data_acc_init(Data_Acc * Acc)
   Acc->last_accel = 0;
 }
 
-void data_acc_maj_acc(AccelData * Data, Data_Acc * Acc, uint32_t num_samples)
+void data_acc_update_acc(AccelData * Data, Data_Acc * Acc, uint32_t num_samples)
 {
   uint32_t i = 0;
   for (i = 0; i <= num_samples - 1; i++)

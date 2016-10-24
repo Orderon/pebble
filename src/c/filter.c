@@ -42,10 +42,11 @@ static double filter_lowpass(char STRUCT_TODO,int time){
   b5=-3.2434,
   b6=0.4821;
   
-return a1 * newInput + a2 * newInput + a3 * newInput + a4 * newInput + a5 * newInput + a6 * newInput + a7 * newInput - b1 * outputHistory[0] - b2 * outputHistory[1];
+return 1;
 }
 
 
-static void findPeaks(void){
+static void findPeaks(uint32_t num_samples)
+{
   
 }
