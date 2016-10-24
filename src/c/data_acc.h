@@ -1,17 +1,25 @@
 #pragma once
-#define TAILLE_ACC 100
+#define NSAMPLES 10
 
-// Structure regroupant les "TAILLE_ACC" dernières accélérations suivant les 3 axes, et l'indice de la dernière accélération (pseudo tableau cicrulaire)
 typedef struct data_acc
 {
-  int last_accel;
-  int x[TAILLE_ACC];
-  int y[TAILLE_ACC];
-  int z[TAILLE_ACC];
+  int last_accel[6];
+  int new_accel[NSAMPLES];
+  int last_accel_filt[6];
+  int new_accel_filt[NSAMPLES];
 } Data_Acc;
 
-//Initialise last_accel à 0 (pas encore d'accélération enregistrée)
+typedef struct data_norm
+{
+  int last_accel[12];
+  int new_accel[NSAMPLES];
+  int last_accel_filt[12];
+  int new_accel_filt[NSAMPLES];
+} Data_Norm;
+
 void data_acc_init(Data_Acc * Acc);
+
+void data_norm_init(Data_Norm * Norm);
 
 //Enregistre les "num_samples" accélérations lue par l'accéléromètre dans la structure Acc
 void data_acc_update_acc(AccelData * Data, Data_Acc * Acc, uint32_t num_samples);

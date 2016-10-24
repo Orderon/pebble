@@ -3,7 +3,22 @@
 
 void data_acc_init(Data_Acc * Acc)
 {
-  Acc->last_accel = 0;
+  int i = 0;
+  for (i=0;i<=6;i++)
+  {
+    Acc->last_accel[i] = 0;
+    Acc->last_accel_filt[i] = 0;
+  }
+}
+
+void data_norm_init(Data_Norm * Norm)
+{
+  int i = 0;
+  for (i=0;i<=12;i++)
+  {
+    Norm->last_accel[i] = 0;
+    Norm->last_accel_filt[i] = 0;
+  }
 }
 
 void data_acc_update_acc(AccelData * Data, Data_Acc * Acc, uint32_t num_samples)

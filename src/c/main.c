@@ -30,7 +30,10 @@ Good luck and have fun!
 Window *main_window;
 TextLayer *background_layer;
 TextLayer *helloWorld_layer;
- static Data_Acc* Acc;
+static Data_Acc* Acc_x;
+static Data_Acc* Acc_y;
+static Data_Acc* Acc_z;
+static Data_Norm* Norm;
 
 // Callback funtcion of the accelerometer
 static void accel_data_handler(AccelData * Data, uint32_t num_samples)
@@ -45,7 +48,7 @@ static void accel_data_handler(AccelData * Data, uint32_t num_samples)
 static void init(Data_Acc * Acc) {
 
     // Number of samples needed to call the accelerometer callback function
-    uint32_t num_samples = 25;
+    uint32_t num_samples = NSAMPLES;
     // Allow accelerometer event
     accel_data_service_subscribe(num_samples, accel_data_handler);
     // Define accelerometer sampling rate  
