@@ -21,7 +21,7 @@ static int find_nb_steps(Data_Acc * Acc[3]){
   //  x=  filter_lowpass(acc, 0, time);
  //   y=  filter_lowpass(acc, 1, time);
  //  z=  filter_lowpass(acc, 2, time);
-    x=y=z= Acc[X]->last_acc[0];
+    x=y=z= Acc[X]->acc[0];
     //do norm^2
    norm = x*x+y*y+z*z;
    x= norm;

@@ -36,7 +36,7 @@ static Data_Norm* Norm;
 // Callback funtcion of the accelerometer
 static void accel_data_handler(AccelData * Data, uint32_t num_samples)
 {
-    data_acc_update_acc(Data,Acc,num_samples);
+    data_acc_update_acc(Data,Acc,Norm);
 }
 
 
