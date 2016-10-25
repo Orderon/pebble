@@ -54,6 +54,8 @@ static void init(void) {
   
     // Init. the acceleration datas
     data_acc_init(Acc);
+    // Init. the norm datas
+    data_norm_init(Norm);
   
     // Show the user Interface display
     show_display();
