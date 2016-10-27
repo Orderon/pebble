@@ -2,7 +2,7 @@
 #define X 0
 #define Y 0
 #define Z 0
-#define NSAMPLES 12
+#define NSAMPLES 25
 
 // Initialisation des accélérations à 0.
 void data_acc_init(void);
