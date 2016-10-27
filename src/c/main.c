@@ -1,22 +1,17 @@
 /*---------------------------------------------------------------------------
 Template for TP of the course "System Engineering" 2016, EPFL
-
 Authors: Flavien Bardyn & Martin Savary
 Version: 1.0
 Date: 10.08.2016
-
 Use this "HelloWorld" example as basis to code your own app, which should at least 
 count steps precisely based on accelerometer data. 
-
 - Add the accelerometer data acquisition
 - Implement your own pedometer using these data
 - (Add an estimation of the distance travelled)
-
 - Make an effort on the design of the app, try to do something fun!
 - Comment and indent your code properly!
 - Try to use your imagination and not google (we already did it, and it's disappointing!)
   to offer us a smart and original solution of pedometer
-
 Don't hesitate to ask us questions.
 Good luck and have fun!
 ---------------------------------------------------------------------------*/
@@ -30,13 +25,11 @@ Good luck and have fun!
 Window *main_window;
 TextLayer *background_layer;
 TextLayer *helloWorld_layer;
-static Data_Acc* Acc[3];
-static Data_Norm* Norm;
 
 // Callback funtcion of the accelerometer
 static void accel_data_handler(AccelData * Data, uint32_t num_samples)
 {
-    data_acc_update_acc(Data,Acc,Norm);
+    data_acc_update_acc(Data);
 }
 
 
@@ -53,9 +46,9 @@ static void init(void) {
     accel_service_set_sampling_rate(ACCEL_SAMPLING_25HZ);
   
     // Init. the acceleration datas
-    data_acc_init(Acc);
+    data_acc_init();
     // Init. the norm datas
-    data_norm_init(Norm);
+    data_norm_init();
   
     // Show the user Interface display
     show_display();

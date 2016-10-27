@@ -1,7 +1,28 @@
 #include <pebble.h>
 #include "data_acc.h"
 
-void data_acc_init(Data_Acc * Acc[3])
+/* Structure contenant les valeurs des accélérations (x, y ou z) brut et filtrés organisée de la manière suivante :
+    - indices 0 à 5 : valeurs au temps t-6, t-5 ... (ces valeurs sont nécessaires pour un filtre d'ordre 6)
+    - indices 6 à NSAMPLES + 6 : derniéres valeurs lues par l'accéléromètre.                                      */
+typedef struct data_acc
+{
+  int acc[NSAMPLES + 6];
+  int acc_filt[NSAMPLES + 6];
+} Data_Acc;
+
+/* Même principe que Data_Acc mais pour la norme de l'accélération. 12 valeurs précédentes sont ici nécessaires 
+   car un filtre passe bande d'ordre 6 est effectué par la suite.                                                  */
+typedef struct data_norm
+{
+  int norm[NSAMPLES + 12];
+  int norm_filt[NSAMPLES + 12];
+} Data_Norm;
+
+static Data_Acc* Acc[3];
+static Data_Norm* Norm;
+
+
+void data_acc_init(void)
 {
   int i = 0, j=0;
   for (i=0;i<=6 + NSAMPLES;i++)
@@ -15,46 +36,46 @@ void data_acc_init(Data_Acc * Acc[3])
   }
 }
 
-void data_norm_init(Data_Norm * Norm)
+void data_norm_init(void)
 {
   int i = 0;
   for (i=0;i<=12 + NSAMPLES;i++)
   {
-    Norm->acc[i] = 0;
-    Norm->acc_filt[i] = 0;
+    Norm->norm[i] = 0;
+    Norm->norm_filt[i] = 0;
   }
 }
 
 // Cette fonction permet de garder en mémoire les valeurs précédentes des accélérations / normes, nécessaires pour le filtrage.
-static void data_acc_decalage(Data_Acc * Acc[3], Data_Norm * Norm)
+static void data_acc_decalage(void)
 {
   int i = 0;  
   for (i = 0; i <= 6; i++)
   {
     // Décalage des accélérations brutes.
-    Acc[X]->acc[i] =  Acc[X]->acc[NSAMPLES-6+i];
-    Acc[Y]->acc[i] =  Acc[Y]->acc[NSAMPLES-6+i];
-    Acc[Z]->acc[i] =  Acc[Z]->acc[NSAMPLES-6+i];
+    Acc[X]->acc[i] = Acc[X]->acc[NSAMPLES-6+i];
+    Acc[Y]->acc[i] = Acc[Y]->acc[NSAMPLES-6+i];
+    Acc[Z]->acc[i] = Acc[Z]->acc[NSAMPLES-6+i];
     
     // Décalage des accélérations filtrées.
-    Acc[X]->acc_filt[i] =  Acc[X]->acc_filt[NSAMPLES-6+i];
-    Acc[Y]->acc_filt[i] =  Acc[Y]->acc_filt[NSAMPLES-6+i];
-    Acc[Z]->acc_filt[i] =  Acc[Z]->acc_filt[NSAMPLES-6+i];
+    Acc[X]->acc_filt[i] = Acc[X]->acc_filt[NSAMPLES-6+i];
+    Acc[Y]->acc_filt[i] = Acc[Y]->acc_filt[NSAMPLES-6+i];
+    Acc[Z]->acc_filt[i] = Acc[Z]->acc_filt[NSAMPLES-6+i];
   }
   
   for (i = 0; i <= 12; i++)
   {
     // Décalage des normes (indicage différent des accélérations)
-    Norm->acc[i] = Norm->acc[NSAMPLES-12+i];
-    Norm->acc_filt[i] = Norm->acc_filt[NSAMPLES-12+i];
+    Norm->norm[i] = Norm->acc[NSAMPLES-12+i];
+    Norm->norm_filt[i] = Norm->acc_filt[NSAMPLES-12+i];
   }  
 }
 
-void data_acc_update_acc(AccelData * Data, Data_Acc * Acc[3], Data_Norm * Norm)
+void data_acc_update_acc(AccelData * Data)
 {
   int i = 0; 
   // Décalage des accélérations / normes avant d'enregistrer les nouvelles.
-  data_acc_decalage(Acc,Norm);
+  data_acc_decalage();
   for (i = 0; i <= NSAMPLES - 1; i++)
   {
     // Enregistrement des accélérations
@@ -62,6 +83,6 @@ void data_acc_update_acc(AccelData * Data, Data_Acc * Acc[3], Data_Norm * Norm)
     Acc[Y]->acc[6+i] = Data[i].y;
     Acc[Z]->acc[6+i] = Data[i].z;
     // Calcul de la norme (sans la racine carré)
-    Norm->acc[12+i] = Data[i].x*Data[i].x + Data[i].y*Data[i].y + Data[i].z*Data[i].z; 
+    Norm->norm[12+i] = Data[i].x*Data[i].x + Data[i].y*Data[i].y + Data[i].z*Data[i].z; 
   }
 }
