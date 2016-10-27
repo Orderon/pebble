@@ -78,7 +78,7 @@ int findPeaks(double fnfacc[12+NSAMPLES]){
     temp = fnfacc[i];
       
       //if the middle value is higher than the two others, then add a peak
-     if(last_temp>llast_temp && last_temp > temp)
+     if(last_temp>llast_temp && last_temp > temp && last_temp > 10000000)
       {
       result += 1;      
       }
