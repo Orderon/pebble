@@ -95,10 +95,10 @@ static void battery_handler(BatteryChargeState charge) {
   layer_mark_dirty((Layer *)batterie);
 }
 
-void update_counter(){
+void update_counter(int add){
   BatteryChargeState state = battery_state_service_peek();
   draw_battery();
-  
+   counter += add;
   static char results[60];
   snprintf(results,60, "Count: %d",counter);
   text_layer_set_text(s_textlayer_2,results);
@@ -167,7 +167,7 @@ void config_provider(Window *window) {
 
 void show_display(void) {
   initialise_ui();
-  update_counter();
+  update_counter(0);
   window_set_click_config_provider(s_window, (ClickConfigProvider) config_provider);
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,

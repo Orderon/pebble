@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "data_acc.h"
 #include "filter.h"
+#include "display.h"
 
 /* Structure contenant les valeurs des accélérations (x, y ou z) brut et filtrés organisée de la manière suivante :
     - indices 0 à 5 : valeurs au temps t-6, t-5 ... (ces valeurs sont nécessaires pour un filtre d'ordre 6)
@@ -62,6 +63,7 @@ static void data_norm_decalage(void)
 
 void data_acc_update_acc(AccelData * Data)
 {
+  static int step = 0;
   int i = 0; 
   // Décalage des normes avant d'enregistrer les nouvelles.
   data_norm_decalage();
@@ -82,4 +84,6 @@ void data_acc_update_acc(AccelData * Data)
     
     Norm->norm_filt[i + 12] = filter_bandpass(i, Norm->norm, Norm->norm_filt);
   }
+  update_counter(findPeaks(Norm->norm_filt));
+  
 }
