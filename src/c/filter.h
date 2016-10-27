@@ -4,13 +4,11 @@
 #include "filter.h"
 #include "data_acc.h"
 #define DIST_PER_STEP 0.5
+#define NSAMPLES 12
 static int n_steps;
 static double distance;
 static double filter1_History[7];
-  
-void handle_acc_data(Data_Acc * Acc[3]);
-static int find_nb_steps(Data_Acc * Acc[3]);
-static double filter_lowpass(Data_Acc * Acc[3],int xyz,int time);
-static double filter_bandpass(Data_Acc * Acc[3],int time);
+double filter_lowpass(int i, int acc[7],double facc[7]);
+double filter_bandpass(int i, long nfacc[13],double fnfacc[12+NSAMPLES]);
 
-static void findPeaks(void);
+int findPeaks(double fnfacc[200]);

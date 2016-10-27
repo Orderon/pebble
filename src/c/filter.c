@@ -4,40 +4,13 @@
 #define DIST_PER_STEP 0.5
 static int n_steps;
 static double distance;
-static double filter1_History[7];
   
-void handle_acc_data(Data_Acc * Acc[3]){
-  n_steps += find_nb_steps(Acc);
-  distance += n_steps*DIST_PER_STEP;
-}
 
-
-static int find_nb_steps(Data_Acc * Acc[3]){
-  int nb_steps = 0;
-  int time=0;
-  double x,y,z,norm;
-  for(;time<25;time++){
-
-  //  x=  filter_lowpass(acc, 0, time);
- //   y=  filter_lowpass(acc, 1, time);
- //  z=  filter_lowpass(acc, 2, time);
-    x=y=z= Acc[X]->acc[0];
-    //do norm^2
-   norm = x*x+y*y+z*z;
-   x= norm;
-    //do filter 2
-    
-    
-    
-    }
-  //findpeaks
-  
-  //return nb of steps found
-  return nb_steps;
-}
- //x: 0, y:1, z:2
-static double filter_lowpass(Data_Acc * Acc[3],int xyz,int time){
- double          
+ //called for x,y and z seperately. acc[0] being the t-6 value of the accelerometer
+//facc[0] being the filtered value at t-6
+double filter_lowpass(int i, int acc[7],double facc[7]){
+/* variable declaration for filter*/
+  double          
   a1= 0.0244,
   a2 = 0.1465,
   a3 = 0.3662,
@@ -52,15 +25,15 @@ static double filter_lowpass(Data_Acc * Acc[3],int xyz,int time){
   b5= -0.0076,
   b6= 0.0019;
   
+  double result = a1* acc[(i+7)%7] + a2 * acc[(i+6)%7] +  a3 * acc[(i+5)%7] + a4 * acc[(i+4)%7] + 
+  a5 * acc[(i+3)%7] + a6 * acc[(i+2)%7] +  a7 * acc[(i+1)%7] -
+  b1 * facc[(i+6)%7] - b2 * facc[(i+5)%7] - b3 * facc[(i+4)%7] - b4 * facc[(i+3)%7] - 
+  b5 * facc[(i+2)%7] - b6 * facc[(i+1)%7];
   
-  
-return a1; /** data_acc_get_samples(&acc, time, xyz) + a2 * data_acc_get_samples(&acc, time+1, xyz) + 
-  a3 * data_acc_get_samples(&acc, time+2, xyz) + a4 * data_acc_get_samples(&acc, time+3, xyz) + 
-  a5 * data_acc_get_samples(&acc, time+4, xyz) + a6 * data_acc_get_samples(&acc, time+5, xyz) + 
-  a7 * data_acc_get_samples(&acc, time+6, xyz) - b1 * filter1_History[1] - b2 * filter1_History[2];*/
+return result;
 }
 
-static double filter_bandpass(Data_Acc * Acc[3],int time){
+double filter_bandpass(int i,long nfacc[13],double fnfacc[12+NSAMPLES]){
  double          
   a1= 0.0103,
   a3 = -0.0619,
@@ -84,14 +57,31 @@ static double filter_bandpass(Data_Acc * Acc[3],int time){
   
   
   
-return a1; /** data_acc_get_samples(&acc, time, xyz) + a2 * data_acc_get_samples(&acc, time+1, xyz) + 
-  a3 * data_acc_get_samples(&acc, time+2, xyz) + a4 * data_acc_get_samples(&acc, time+3, xyz) + 
-  a5 * data_acc_get_samples(&acc, time+4, xyz) + a6 * data_acc_get_samples(&acc, time+5, xyz) + 
-  a7 * data_acc_get_samples(&acc, time+6, xyz) - b1 * filter1_History[1] - b2 * filter1_History[2];*/
+  double result = a1* nfacc[(i+13)%13] +  a3 * nfacc[(i+11)%13] +  a5 * nfacc[(i+9)%13] +
+  a7 * nfacc[(i+7)%13] +  a9 * nfacc[(i+5)%13] +  a11 * nfacc[(i+3)%13] +  a13 * nfacc[(i+1)%13] -
+  b1 * fnfacc[i+11] - b2 * fnfacc[i+10] - b3 * fnfacc[i+9] - b4 * fnfacc[i+8] - 
+  b5 * fnfacc[i+7] - b6 * fnfacc[i+6] - b7 * fnfacc[i+5] - b8 * fnfacc[i+4] -
+  b9 * fnfacc[i+3] - b10 * fnfacc[i+2] - b11 * fnfacc[i+1] - b12 * fnfacc[i+0];
+  return result;
 }
 
-static void findPeaks(void){
-  
-  
-  
+int findPeaks(double fnfacc[12+NSAMPLES]){
+  int result=0;
+  int llast_temp=0; 
+  int last_temp=fnfacc[10]; //initialize last two variables from previous set.
+  int temp=fnfacc[11];
+  for(int i=12;i<12+NSAMPLES;i++){ 
+    
+    //actualise temporary variables (go forward in time by 1 step)
+    llast_temp = last_temp;
+    last_temp = temp;
+    temp = fnfacc[i];
+      
+      //if the middle value is higher than the two others, then add a peak
+     if(last_temp>llast_temp && last_temp > temp)
+      {
+      result += 1;      
+      }
+  }
+    return result;
 }
