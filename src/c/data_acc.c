@@ -73,6 +73,7 @@ void data_acc_update_acc(AccelData * Data)
     Acc[X].acc[i%7] = Data[i].x;
     Acc[Y].acc[i%7] = Data[i].y;
     Acc[Z].acc[i%7] = Data[i].z;
+   
     
     Acc[X].acc_filt[i%7] = filter_lowpass(i,Acc[X].acc, Acc[X].acc_filt);
     Acc[Y].acc_filt[i%7] = filter_lowpass(i,Acc[Y].acc, Acc[Y].acc_filt);
@@ -81,7 +82,7 @@ void data_acc_update_acc(AccelData * Data)
     Norm.norm[i%13] = (Acc[X].acc_filt[i%7]*Acc[X].acc_filt[i%7] +
                       Acc[Y].acc_filt[i%7]*Acc[Y].acc_filt[i%7] +
                       Acc[Z].acc_filt[i%7]*Acc[Z].acc_filt[i%7])/10000;
-    
+  
     Norm.norm_filt[i + 12] = filter_bandpass(i, Norm.norm, Norm.norm_filt);
     moy += Norm.norm_filt[i + 12];
   } 

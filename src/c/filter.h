@@ -4,7 +4,7 @@
 #include "filter.h"
 #include "data_acc.h"
 #define DIST_PER_STEP 0.5
-#define NSAMPLES 15
+#define NSAMPLES 25
 static int n_steps;
 static double distance;
 static double filter1_History[7];

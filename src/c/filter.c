@@ -66,10 +66,11 @@ double filter_bandpass(int i,double nfacc[13],double fnfacc[12+NSAMPLES]){
 }
 
 int findPeaks(double fnfacc[12+NSAMPLES], double moy){
-  int result=0;
-  int llast_temp=0; 
-  int last_temp=fnfacc[10]; //initialize last two variables from previous set.
-  int temp=fnfacc[11];
+  static int ilastpeak = 0;
+  double result=0;
+  double llast_temp=0; 
+  double last_temp=fnfacc[10]; //initialize last two variables from previous set.
+  double temp=fnfacc[11];
   for(int i=12;i<12+NSAMPLES;i++){ 
     
     //actualise temporary variables (go forward in time by 1 step)
@@ -78,10 +79,13 @@ int findPeaks(double fnfacc[12+NSAMPLES], double moy){
     temp = fnfacc[i];
       
       //if the middle value is higher than the two others, then add a peak
-     if(last_temp>llast_temp && last_temp > temp && last_temp > moy/2)
+     if((last_temp>(llast_temp+15)) && (last_temp>(temp+15)) && (last_temp > 200) && (last_temp > moy/5) && ((i - ilastpeak>=5)||(i-ilastpeak+12+NSAMPLES)>=5))
       {
-        result += 1;      
+        result += 1;
+       ilastpeak = i;
       }
   }
+  if (result == 0)
+    ilastpeak = 0;
     return result;
 }

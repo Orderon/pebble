@@ -105,9 +105,6 @@ void draw_battery(){
     batterie = bitmap_layer_create(GRect(34-length, 2, length, 20));
     bitmap_layer_set_background_color(batterie, GColorWhite);
     layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
-	  APP_LOG(APP_LOG_LEVEL_DEBUG, "Testpos 2.5");
- 
-  
 }
 
 static void battery_handler(BatteryChargeState charge) {
