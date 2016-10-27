@@ -64,11 +64,17 @@ static void destroy_ui(void) {
   gbitmap_destroy(s_res_play);
 }
 // END AUTO-GENERATED UI CODE
-void draw_battery(){
+
+static void initialise_ui_manuel(void){
+  
+  // Init. battery percentage
+  BatteryChargeState state = battery_state_service_peek();
+  battery = state.charge_percent;
   //overdraw everything with black
     batterie = bitmap_layer_create(GRect(2, 2, 34, 20));
     bitmap_layer_set_background_color(batterie, GColorBlack);
     layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+  
     // battery_end
   batterie_end = bitmap_layer_create(GRect(34, 8, 6, 8));
   bitmap_layer_set_background_color(batterie_end, GColorWhite);
@@ -84,6 +90,23 @@ void draw_battery(){
     bitmap_layer_set_background_color(batterie, GColorWhite);
     layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
  
+}
+void draw_battery(){ 
+  //destroy previous layer of the battery
+  bitmap_layer_destroy(batterie);
+  
+  //overdraw everything with black
+  //  batterie = bitmap_layer_create(GRect(2, 2, 34, 20));
+  //  bitmap_layer_set_background_color(batterie, GColorBlack);
+  //  layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+  
+  // draw new battery layer
+    int length = (31*battery)/100;
+    batterie = bitmap_layer_create(GRect(34-length, 2, length, 20));
+    bitmap_layer_set_background_color(batterie, GColorWhite);
+    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+	  APP_LOG(APP_LOG_LEVEL_DEBUG, "Testpos 2.5");
+ 
   
 }
 
@@ -96,7 +119,7 @@ static void battery_handler(BatteryChargeState charge) {
 }
 
 void update_counter(int add){
-  BatteryChargeState state = battery_state_service_peek();
+   
   draw_battery();
    counter += add;
   static char results[60];
@@ -110,49 +133,48 @@ void draw_counter(){
   snprintf(results,60, "Count: %d",counter);
   
     text_layer_set_text(s_textlayer_2,results);
-  
 }
+
 static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
+
+// -----------------Callback handlers for button clicks -----------
+
 void down_single_click_handler(ClickRecognizerRef recognizer, void *context) {
- // ... called on single click ...
-  Window *window = (Window *)context;
-  ButtonId buttonId = click_recognizer_get_button_id(recognizer);
+ // ... called on single click down ...
     counter += 1;
   draw_counter(); 
 }
 
 void up_single_click_handler(ClickRecognizerRef recognizer, void *context) {
- // ... called on single click ...
-  Window *window = (Window *)context;
-  ButtonId buttonId = click_recognizer_get_button_id(recognizer);
+ // ... called on single click up...
     counter += 1;
   draw_counter(); 
 }
 
 void select_single_click_handler(ClickRecognizerRef recognizer, void *context) {
- // ... called on single click, and every 1000ms of being held ... on s'en fiche!  
+ // ... called on single click middle, and every 1000ms of being held ... on s'en fiche!  
   counter += 1;
   draw_counter();
-  Window *window = (Window *)context;
 }
 
 void select_long_click_handler(ClickRecognizerRef recognizer, void *context) {
-//  ... called on long click start ... on s'en fiche! 
+//  ... called on long click start mais s'effectue que quand on release...j'en sais rien. (fonctionnes comme reset là) 
   counter = 0;
   static char results[60];
   snprintf(results,60, "Count: %d",counter);
   
     text_layer_set_text(s_textlayer_2,results);
-  Window *window = (Window *)context;
 }
 
 void select_long_click_release_handler(ClickRecognizerRef recognizer, void *context) {
  // ... called when long click is released ... on s'en fiche! 
-    Window *window = (Window *)context;
 }
+/* -----------end of button callbacks ---------------\\
+(c'est merdique comme commentaire car si j'en fais 2 cloudpebble ne veut pas compiller...)
+//subscribes click handlers to window*/
 void config_provider(Window *window) {
  // single click / repeat-on-hold config:
   window_single_click_subscribe(BUTTON_ID_DOWN, down_single_click_handler);
@@ -165,9 +187,10 @@ void config_provider(Window *window) {
   window_long_click_subscribe(BUTTON_ID_SELECT, 700, select_long_click_handler, select_long_click_release_handler);
 }
 
+//called to show the window will handle initialisation & display of window
 void show_display(void) {
   initialise_ui();
-  update_counter(0);
+  initialise_ui_manuel();
   window_set_click_config_provider(s_window, (ClickConfigProvider) config_provider);
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
@@ -175,6 +198,7 @@ void show_display(void) {
   window_stack_push(s_window, true);
 }
 
+//called to hide window. will handle destruction of window
 void hide_display(void) {
   window_stack_remove(s_window, true);
 }

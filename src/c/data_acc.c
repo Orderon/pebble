@@ -16,7 +16,7 @@ typedef struct data_acc
    car un filtre passe bande d'ordre 6 est effectué par la suite.                                                  */
 typedef struct data_norm
 {
-  long norm[13];
+  double norm[13];
   double norm_filt[NSAMPLES + 12];
 } Data_Norm;
 
@@ -66,6 +66,7 @@ void data_acc_update_acc(AccelData * Data)
   int i = 0; 
   // Décalage des normes avant d'enregistrer les nouvelles.
   data_norm_decalage();
+  double moy = 0;
   for (i = 0; i <= NSAMPLES - 1; i++)
   {
     // Enregistrement des accélérations
@@ -77,12 +78,14 @@ void data_acc_update_acc(AccelData * Data)
     Acc[Y].acc_filt[i%7] = filter_lowpass(i,Acc[Y].acc, Acc[Y].acc_filt);
     Acc[Z].acc_filt[i%7] = filter_lowpass(i,Acc[Z].acc, Acc[Z].acc_filt);
     
-    Norm.norm[i%13] = Acc[X].acc_filt[i%7]*Acc[X].acc_filt[i%7] +
-                       Acc[Y].acc_filt[i%7]*Acc[Y].acc_filt[i%7] +
-                       Acc[Z].acc_filt[i%7]*Acc[Z].acc_filt[i%7];
+    Norm.norm[i%13] = (Acc[X].acc_filt[i%7]*Acc[X].acc_filt[i%7] +
+                      Acc[Y].acc_filt[i%7]*Acc[Y].acc_filt[i%7] +
+                      Acc[Z].acc_filt[i%7]*Acc[Z].acc_filt[i%7])/10000;
     
     Norm.norm_filt[i + 12] = filter_bandpass(i, Norm.norm, Norm.norm_filt);
-  }
-  update_counter(findPeaks(Norm.norm_filt));
+    moy += Norm.norm_filt[i + 12];
+  } 
+  moy /= NSAMPLES;
+  update_counter(findPeaks(Norm.norm_filt, moy));
   
 }

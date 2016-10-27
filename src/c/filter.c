@@ -33,7 +33,7 @@ double filter_lowpass(int i, int acc[7],double facc[7]){
 return result;
 }
 
-double filter_bandpass(int i,long nfacc[13],double fnfacc[12+NSAMPLES]){
+double filter_bandpass(int i,double nfacc[13],double fnfacc[12+NSAMPLES]){
  double          
   a1= 0.0103,
   a3 = -0.0619,
@@ -65,7 +65,7 @@ double filter_bandpass(int i,long nfacc[13],double fnfacc[12+NSAMPLES]){
   return result;
 }
 
-int findPeaks(double fnfacc[12+NSAMPLES]){
+int findPeaks(double fnfacc[12+NSAMPLES], double moy){
   int result=0;
   int llast_temp=0; 
   int last_temp=fnfacc[10]; //initialize last two variables from previous set.
@@ -78,9 +78,9 @@ int findPeaks(double fnfacc[12+NSAMPLES]){
     temp = fnfacc[i];
       
       //if the middle value is higher than the two others, then add a peak
-     if(last_temp>llast_temp && last_temp > temp && last_temp > 10000000)
+     if(last_temp>llast_temp && last_temp > temp && last_temp > moy/2)
       {
-      result += 1;      
+        result += 1;      
       }
   }
     return result;
