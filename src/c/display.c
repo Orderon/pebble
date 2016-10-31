@@ -118,7 +118,7 @@ static void battery_handler(BatteryChargeState charge) {
 void update_counter(int add){
    
   draw_battery();
-   counter += add;
+   counter = add;
   static char results[60];
   snprintf(results,60, "Count: %d",counter);
   text_layer_set_text(s_textlayer_2,results);

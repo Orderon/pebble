@@ -1,14 +1,10 @@
 #include <pebble.h>
-
 #include "filter.h"
 #include "data_acc.h"
 #define DIST_PER_STEP 0.5
 static int n_steps;
 static double distance;
-
-double auto_correlation(int input[NSAMPLES]){
   
-}
 
  //called for x,y and z seperately. acc[0] being the t-6 value of the accelerometer
 //facc[0] being the filtered value at t-6
@@ -83,9 +79,9 @@ int findPeaks(double fnfacc[12+NSAMPLES], double moy){
     temp = fnfacc[i];
       
       //if the middle value is higher than the two others, then add a peak
-     if((last_temp>(llast_temp+15)) && (last_temp>(temp+15)) && (last_temp > 200) && (last_temp > moy/5) && ((i - ilastpeak>=5)||(i-ilastpeak+12+NSAMPLES)>=5))
+     if((last_temp>(llast_temp)) && (last_temp>(temp)) && (last_temp > 750) && (last_temp<3000000)&& (last_temp > 1.1*moy) && ((i - ilastpeak>=10)||(i-ilastpeak+12+NSAMPLES)>=10))
       {
-        result += 1;
+        result = last_temp;
        ilastpeak = i;
       }
   }
