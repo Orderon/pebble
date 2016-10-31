@@ -1,10 +1,14 @@
 #include <pebble.h>
+
 #include "filter.h"
 #include "data_acc.h"
 #define DIST_PER_STEP 0.5
 static int n_steps;
 static double distance;
+
+double auto_correlation(int input[NSAMPLES]){
   
+}
 
  //called for x,y and z seperately. acc[0] being the t-6 value of the accelerometer
 //facc[0] being the filtered value at t-6
