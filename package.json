@@ -1,15 +1,21 @@
 {
-    "author": "flavien.bardyn@epfl.ch",
+    "author": "luluhouel@hotmail.com",
     "dependencies": {},
     "keywords": [],
-    "name": "tp-system-engineering",
+    "name": "interface2",
     "pebble": {
-        "displayName": "TP System Engineering",
-        "enableMultiJS": false,
+        "displayName": "Interface2",
+        "enableMultiJS": true,
         "messageKeys": [],
         "projectType": "native",
         "resources": {
             "media": [
+                {
+                    "file": "images/trophy",
+                    "name": "trophy",
+                    "targetPlatforms": null,
+                    "type": "png"
+                },
                 {
                     "file": "images/stop.png",
                     "name": "stop",
@@ -23,18 +29,21 @@
                     "type": "bitmap"
                 },
                 {
-                    "file": "images/play-button.png",
+                    "file": "images/start.png",
                     "name": "play",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/images.png",
+                    "name": "mario2",
                     "targetPlatforms": null,
                     "type": "bitmap"
                 }
             ]
         },
         "sdkVersion": "3",
-        "targetPlatforms": [
-            "aplite"
-        ],
-        "uuid": "62f781cf-0f5a-4218-b73c-a7e947933348",
+        "uuid": "10503267-1651-41f5-88a8-c13458fe4721",
         "watchapp": {
             "watchface": false
         }

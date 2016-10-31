@@ -1,75 +1,167 @@
-/*---------------------------------------------------------------------------
-Template for TP of the course "System Engineering" 2016, EPFL
-Authors: Flavien Bardyn & Martin Savary
-Version: 1.0
-Date: 10.08.2016
-Use this "HelloWorld" example as basis to code your own app, which should at least 
-count steps precisely based on accelerometer data. 
-- Add the accelerometer data acquisition
-- Implement your own pedometer using these data
-- (Add an estimation of the distance travelled)
-- Make an effort on the design of the app, try to do something fun!
-- Comment and indent your code properly!
-- Try to use your imagination and not google (we already did it, and it's disappointing!)
-  to offer us a smart and original solution of pedometer
-Don't hesitate to ask us questions.
-Good luck and have fun!
----------------------------------------------------------------------------*/
-
-// Include Pebble library
 #include <pebble.h>
-#include "src/c/display.h"
-#include "src/c/data_acc.h"
+#include "animation.h"
+#include "message.h"
 
-// Declare the main window and two text layers
-Window *main_window;
-TextLayer *background_layer;
-TextLayer *helloWorld_layer;
+uint16_t counter;
+long double distance;
+Layer *s_layer;
+BitmapLayer *character_layer;
+GBitmap *character; 
 
-// Callback funtcion of the accelerometer
-static void accel_data_handler(AccelData * Data, uint32_t num_samples)
-{
-    data_acc_update_acc(Data);
+// Background //////////////
+Window *s_window;
+GFont s_res_gothic_28_bold;
+GBitmap *s_res_replay;
+GBitmap *s_res_stop;
+GBitmap *s_res_play;
+GFont s_res_gothic_18;
+TextLayer *s_textlayer_1;
+ActionBarLayer *s_actionbarlayer_1;
+TextLayer *s_textlayer_2;
+TextLayer *s_textlayer_3;
+
+
+//////////////////////////////
+
+ static void main_window_load(Window *window) {
+  // Get information about the Window
+  Layer *window_layer = window_get_root_layer(window);
+  GRect bounds = layer_get_bounds(window_layer);
+
+  // Improve the layout to be more like a watchface
+  s_res_gothic_28_bold = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
+  s_res_replay = gbitmap_create_with_resource(RESOURCE_ID_replay);
+  s_res_stop = gbitmap_create_with_resource(RESOURCE_ID_stop);
+  s_res_play = gbitmap_create_with_resource(RESOURCE_ID_play);
+  s_res_gothic_18 = fonts_get_system_font(FONT_KEY_GOTHIC_18);
+   
+  // s_textlayer_1
+  s_textlayer_1 = text_layer_create(GRect(-5, 9, 130, 28));
+  text_layer_set_background_color(s_textlayer_1, GColorClear);
+  text_layer_set_text_color(s_textlayer_1, GColorWhite);
+  text_layer_set_text(s_textlayer_1, "Pedometer");
+  text_layer_set_text_alignment(s_textlayer_1, GTextAlignmentCenter);
+  text_layer_set_font(s_textlayer_1, s_res_gothic_28_bold);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_1);
+  
+  // s_actionbarlayer_1
+  s_actionbarlayer_1 = action_bar_layer_create();
+  action_bar_layer_add_to_window(s_actionbarlayer_1, s_window);
+  action_bar_layer_set_background_color(s_actionbarlayer_1, GColorClear);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_UP, s_res_replay);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_SELECT, s_res_stop);
+  action_bar_layer_set_icon(s_actionbarlayer_1, BUTTON_ID_DOWN, s_res_play);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_actionbarlayer_1);
+  
+  // s_textlayer_2
+  s_textlayer_2 = text_layer_create(GRect(45, 107, 100, 28));
+  text_layer_set_background_color(s_textlayer_2, GColorClear);
+  text_layer_set_text_color(s_textlayer_2, GColorWhite);
+  text_layer_set_text(s_textlayer_2, "Step:");
+  text_layer_set_font(s_textlayer_2, s_res_gothic_18);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_2);
+  
+  // s_textlayer_3
+  s_textlayer_3 = text_layer_create(GRect(9, 131, 100, 20));
+  text_layer_set_text(s_textlayer_3, "Distance:");
+  text_layer_set_text_alignment(s_textlayer_3, GTextAlignmentCenter);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_3);
+   
+  // Create the Animate Layer
+  character_layer = bitmap_layer_create(GRect(30, 37, 60, 60));
+  character = gbitmap_create_with_resource(RESOURCE_ID_mario2);
+  bitmap_layer_set_background_color(character_layer, GColorBlack);
+  bitmap_layer_set_bitmap(character_layer, character);
+  s_layer=bitmap_layer_get_layer(character_layer);
+  
+
+  // Add it as a child layer to the Window's root layer
+  layer_add_child(window_layer, action_bar_layer_get_layer(s_actionbarlayer_1));
+  layer_add_child(window_layer, text_layer_get_layer(s_textlayer_1));
+  layer_add_child(window_layer, text_layer_get_layer(s_textlayer_2));
+  layer_add_child(window_layer, text_layer_get_layer(s_textlayer_3));
+  layer_add_child(window_layer, s_layer);
+   
+   // Animate the layer
+   GRect start = GRect(30, 37, 60, 60);
+   GRect finish = GRect(30, 50, 60, 60);
+   animate_layer(s_layer, &start, &finish, 300);
+   
+   // Message at 10000 steps
+   //dialog_message_window_push();
 }
 
+static void main_window_unload(Window *window) {
+   // Destroy child layer
+  layer_destroy(s_layer);
+  bitmap_layer_destroy(character_layer);
+  text_layer_destroy(s_textlayer_1);
+  action_bar_layer_destroy(s_actionbarlayer_1);
+  text_layer_destroy(s_textlayer_2);
+  text_layer_destroy(s_textlayer_3);
 
 
+   // Destroy images
+  gbitmap_destroy(s_res_replay);
+  gbitmap_destroy(s_res_stop);
+  gbitmap_destroy(s_res_play);
+  gbitmap_destroy(character);
 
-// Init function called when app is launched
-static void init(void) {
-
-    // Number of samples needed to call the accelerometer callback function
-    uint32_t num_samples = NSAMPLES;
-    // Allow accelerometer event
-    accel_data_service_subscribe(num_samples, accel_data_handler);
-    // Define accelerometer sampling rate  
-    accel_service_set_sampling_rate(ACCEL_SAMPLING_25HZ);
-  
-    // Init. the acceleration datas
-    data_acc_init();
-    // Init. the norm datas
-    data_norm_init();
-  
-    // Show the user Interface display
-    show_display();
-  
-    // Add a logging meassage (for debug)
-	  APP_LOG(APP_LOG_LEVEL_DEBUG, "Just write my first app!");
 }
 
-// deinit function called when the app is closed
-static void deinit(void) {
-  
-    // Destroy layers and main window 
-    text_layer_destroy(background_layer);
-	  text_layer_destroy(helloWorld_layer);
-    window_destroy(main_window);
-    // Stop accelerometer
-    accel_data_service_unsubscribe();
+// Create animation ////////
+/*void tick_handler(struct tm *tick_time, TimeUnits units_changed){
+  update_time();
+  int seconds = tick_time->tm_sec;
+  if (seconds==0) {
+        //Slide offscreen up
+        GRect start = GRect(30, 37, 60, 60);
+        GRect finish = GRect(30, 50, 60, 60);
+        animate_layer(s_layer, &start, &finish, 300, 500);
+  }
+
+}*/
+
+///////////////////////////
+
+ void init(void) {
+   // Create main Window element and assign to pointer
+  s_window = window_create();
+  window_set_background_color(s_window, GColorBlack);
+  #ifndef PBL_SDK_3
+    window_set_fullscreen(s_window, true);
+  #endif
+
+  // Set handlers to manage the elements inside the Window
+  window_set_window_handlers(s_window, (WindowHandlers) {
+    .load = main_window_load,
+    .unload = main_window_unload
+    });
+
+  // Show the Window on the watch, with animated=true
+  window_stack_push(s_window, true);
+   
+  // Register with TickTimerService
+  //tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
+   
+  // Make sure the time is displayed from the start
+  //update_time();
 }
+
+ void deinit(void) {
+   // Destroy window
+  window_destroy(s_window);
+}
+
+/////////////////////////////
 
 int main(void) {
-    init();
-    app_event_loop();
-    deinit();
+  // initialisation
+  init();
+ // dialog_message_window_push();
+   
+ app_event_loop();
+  
+  //Deinitialisation
+  deinit();
 }
