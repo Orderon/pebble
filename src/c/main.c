@@ -20,11 +20,7 @@ Good luck and have fun!
 #include <pebble.h>
 #include "src/c/display.h"
 #include "src/c/data_acc.h"
-
-// Declare the main window and two text layers
-Window *main_window;
-TextLayer *background_layer;
-TextLayer *helloWorld_layer;
+#include "display.h"
 
 // Callback funtcion of the accelerometer
 static void accel_data_handler(AccelData * Data, uint32_t num_samples)
@@ -61,9 +57,8 @@ static void init(void) {
 static void deinit(void) {
   
     // Destroy layers and main window 
-    text_layer_destroy(background_layer);
-	  text_layer_destroy(helloWorld_layer);
-    window_destroy(main_window);
+
+    window_deinit();
     // Stop accelerometer
     accel_data_service_unsubscribe();
 }

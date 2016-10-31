@@ -8,7 +8,7 @@ static double distance;
 
  //called for x,y and z seperately. acc[0] being the t-6 value of the accelerometer
 //facc[0] being the filtered value at t-6
-double filter_lowpass(int i, int acc[7],double facc[7]){
+double filter_lowpass(int i, double acc[7],double facc[7]){
 /* variable declaration for filter*/
   double          
   a1= 0.0244,
@@ -65,27 +65,33 @@ double filter_bandpass(int i,double nfacc[13],double fnfacc[12+NSAMPLES]){
   return result;
 }
 
-int findPeaks(double fnfacc[12+NSAMPLES], double moy){
+int findPeaks(double fnfacc[7+NSAMPLES], double moy){
   static int ilastpeak = 0;
+  int i = 0;
+  int delta_i = 0;
   double result=0;
   double llast_temp=0; 
-  double last_temp=fnfacc[10]; //initialize last two variables from previous set.
-  double temp=fnfacc[11];
-  for(int i=12;i<12+NSAMPLES;i++){ 
+  double last_temp=fnfacc[5]; //initialize last two variables from previous set.
+  double temp=fnfacc[6];
+  for(i=7;i<7+NSAMPLES;i++){ 
     
     //actualise temporary variables (go forward in time by 1 step)
     llast_temp = last_temp;
     last_temp = temp;
     temp = fnfacc[i];
-      
-      //if the middle value is higher than the two others, then add a peak
-     if((last_temp>(llast_temp)) && (last_temp>(temp)) && (last_temp > 750) && (last_temp<3000000)&& (last_temp > 1.1*moy) && ((i - ilastpeak>=10)||(i-ilastpeak+12+NSAMPLES)>=10))
+    delta_i = i-ilastpeak;
+    if(delta_i<0)
+      delta_i += 6+NSAMPLES;
+      //if the middle value is higher than the two others, then add a peak && (last_temp<3000000)&& (last_temp > moy/5) 
+     if(last_temp>(llast_temp) && last_temp>(temp) && (last_temp > 1350)&& (delta_i>3))
       {
-        result = last_temp;
-       ilastpeak = i;
+         result += 1;
+       APP_LOG(APP_LOG_LEVEL_DEBUG, "%d %d",(int)(ilastpeak), i);
+         ilastpeak = i;
       }
   }
   if (result == 0)
     ilastpeak = 0;
+  
     return result;
 }

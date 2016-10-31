@@ -11,6 +11,18 @@
         "resources": {
             "media": [
                 {
+                    "file": "images/wow2.png",
+                    "name": "trophy",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/images.png",
+                    "name": "mario2",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
                     "file": "images/stop.png",
                     "name": "stop",
                     "targetPlatforms": null,
