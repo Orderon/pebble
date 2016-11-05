@@ -63,7 +63,6 @@ static void data_norm_decalage()
 
 void data_acc_update_acc(AccelData * Data)
 {
-  static int step = 0;
   int i = 0;
   static double last_norm_filt[7] = {1000,1000,1000,1000,1000,1000,1000};
   // Décalage des normes avant d'enregistrer les nouvelles.
@@ -88,7 +87,7 @@ void data_acc_update_acc(AccelData * Data)
     Norm.norm_filt[i + 6] = filter_lowpass(i, Norm.norm, last_norm_filt);
     last_norm_filt[i%7] = Norm.norm_filt[i + 6];
     moy += Norm.norm_filt[i + 6];
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "%d",(int)(Norm.norm_filt[i+6]));
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "%d",(int)(Norm.norm_filt[i+6]));
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "%d",(int)(Data[i].x));
   } 
   moy /= NSAMPLES;

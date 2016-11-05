@@ -2,14 +2,15 @@
 #include "display.h"
 #include "animation.h"
 #include "message.h"
-uint16_t counter;
-double distance;
-int stop=0;
+
+
+///// DECLARATION //////////////
+
+  // Animation
 Layer *s_layer;
 BitmapLayer *character_layer;
 GBitmap *character; 
-
-///// DECLARATION //////////////
+  // Background
 Window *s_window;
 GFont s_res_gothic_28_bold;
 GBitmap *s_res_replay;
@@ -20,51 +21,49 @@ TextLayer *s_textlayer_1;
 ActionBarLayer *s_actionbarlayer_1;
 TextLayer *s_textlayer_2;
 TextLayer *s_textlayer_3;
-
+  // Batterie
 static uint16_t battery=24;
 static BitmapLayer *batterie;
 static BitmapLayer *batterie_end;
 static BitmapLayer *batterie_start;
 static bool deja_aff = 0;
+  // Steps
+uint16_t counter;
+double distance;
+int stop=0;
 
+//////// BUTTON /////////////
 
-//////// BUTTON //////////
-void down_click_handler(ClickRecognizerRef recognizer, void *context) {
- // ... called on single click down ...
+  /*Handler des boutons, permettent de changer la valeur de stop: 
+une fois stop à 1, on ne compte plus les pas et l'animation stoppe */
+static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
     stop = 0;
   APP_LOG(APP_LOG_LEVEL_ERROR, "play");
   
 }
-
-void up_click_handler(ClickRecognizerRef recognizer, void *context) {
- // ... called on single click up...
+static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
     counter = 0;
   deja_aff = 0;
   APP_LOG(APP_LOG_LEVEL_ERROR, "replay");
 }
-
-void select_click_handler(ClickRecognizerRef recognizer, void *context) {
- // ... called on single click middle, and every 1000ms of being held ... on s'en fiche!  
+static void select_click_handler(ClickRecognizerRef recognizer, void *context) {  
   stop = 1;
   APP_LOG(APP_LOG_LEVEL_ERROR, "stop");
 }
-
-void click_config_provider(void *context) {
- // single click / repeat-on-hold config:
-   APP_LOG(APP_LOG_LEVEL_DEBUG, "provider");
+  /* soubscription aux event bouton */
+static void click_config_provider(void *context) {
   window_single_repeating_click_subscribe(BUTTON_ID_UP, 50, up_click_handler);
   window_single_repeating_click_subscribe(BUTTON_ID_DOWN, 50,down_click_handler);
   window_single_repeating_click_subscribe(BUTTON_ID_SELECT, 50, select_click_handler);
-   APP_LOG(APP_LOG_LEVEL_DEBUG, "provider2");
 }
 
-////////////////////////
+//////////////Background //////////
 
-void main_window_load(Window *window) {
+/* the window's handlers*/
+static void main_window_load(Window *window) {
   // Get information about the Window
   Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_bounds(window_layer);
-
+  
   // Improve the layout to be more like a watchface
   s_res_gothic_28_bold = fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD);
   s_res_replay = gbitmap_create_with_resource(RESOURCE_ID_replay);
@@ -119,17 +118,8 @@ void main_window_load(Window *window) {
   layer_add_child(window_layer, text_layer_get_layer(s_textlayer_2));
   layer_add_child(window_layer, text_layer_get_layer(s_textlayer_3));
   layer_add_child(window_layer, s_layer);
-   
-   // Animate the layer
-   GRect finish = GRect(30, 37, 60, 60);
-   GRect start = GRect(30, 50, 60, 60);
-   animate_layer(s_layer, &start, &finish, 300);
-   
-   // Message at 10000 steps
-   //dialog_message_window_push();
 }
-
-void main_window_unload(Window *window) {
+static void main_window_unload(Window *window) {
    // Destroy child layer
   layer_destroy(s_layer);
   bitmap_layer_destroy(character_layer);
@@ -148,16 +138,16 @@ void main_window_unload(Window *window) {
 }
 
 /////// BATTERY ////////
-
+/* Battery initialisation */
 static void initialise_ui_manuel(void){
   
   // Init. battery percentage
   BatteryChargeState state = battery_state_service_peek();
   battery = state.charge_percent;
   //overdraw everything with black
-    batterie = bitmap_layer_create(GRect(2, 2, 25, 11));
-    bitmap_layer_set_background_color(batterie, GColorBlack);
-    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+  batterie = bitmap_layer_create(GRect(2, 2, 25, 11));
+  bitmap_layer_set_background_color(batterie, GColorBlack);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
   
     // battery_end
   batterie_end = bitmap_layer_create(GRect(25, 5, 6, 6));
@@ -169,28 +159,23 @@ static void initialise_ui_manuel(void){
   layer_add_child(window_get_root_layer(s_window), (Layer *)batterie_start);
   
   // battery
-    int length = (22*battery)/100+1;
-    batterie = bitmap_layer_create(GRect(25-length, 2, length, 11));
-    bitmap_layer_set_background_color(batterie, GColorWhite);
-    layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
+  int length = (22*battery)/100+1;
+  batterie = bitmap_layer_create(GRect(25-length, 2, length, 11));
+  bitmap_layer_set_background_color(batterie, GColorWhite);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
  
 }
-void draw_battery(){ 
+
+static void draw_battery(){ 
   //destroy previous layer of the battery
   bitmap_layer_destroy(batterie);
-  
-  //overdraw everything with black
-  //  batterie = bitmap_layer_create(GRect(2, 2, 34, 20));
-  //  bitmap_layer_set_background_color(batterie, GColorBlack);
-  //  layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
-  
+
   // draw new battery layer
     int length = (31*battery)/100;
     batterie = bitmap_layer_create(GRect(25-length, 2, length, 11));
     bitmap_layer_set_background_color(batterie, GColorWhite);
     layer_add_child(window_get_root_layer(s_window), (Layer *)batterie);
 }
-
 static void battery_handler(BatteryChargeState state) {
   battery = state.charge_percent;
   draw_battery();
@@ -199,9 +184,9 @@ static void battery_handler(BatteryChargeState state) {
   layer_mark_dirty((Layer *)batterie);
 }
 
-////////////////////////
+//////////// Construction and destriction function to handle the memory ////////////
 
-void initialise_ui(void) {
+static void initialise_ui(void) {
    // Create main Window element and assign to pointer
   s_window = window_create();
   window_set_background_color(s_window, GColorBlack);
@@ -225,11 +210,14 @@ void initialise_ui(void) {
   // Make sure the time is displayed from the start
   //update_time();
 }
-
 void window_deinit(){
   window_destroy(s_window);
 }
 
+///////////// UPDATE LOOP //////
+
+/* Update the number of steps if !stop and schedule the background animation.
+When the number of steps is 10000 (but here 100 in order to maj-ke it visible rapidly) it pushes the message "wow ! you ran 10000 steps" */
 void update_counter(int add){
   // APP_LOG(APP_LOG_LEVEL_DEBUG, "update");
   if (!stop){
@@ -256,14 +244,15 @@ void update_counter(int add){
   
 }
 
+//////////// Gather the 'init' and 'deinit' functions  //////////////
+
 //called to show the window will handle initialisation & display of window
 void show_display(void) {
   initialise_ui();
   initialise_ui_manuel();
   window_stack_push(s_window, true);
 }
-
 //called to hide window. will handle destruction of window
-/*void hide_display(void) {
+void hide_display(void) {
   window_stack_remove(s_window, true);
-}*/
+}

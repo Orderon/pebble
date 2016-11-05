@@ -1,4 +1,3 @@
-//modification for push...
 /*---------------------------------------------------------------------------
 Template for TP of the course "System Engineering" 2016, EPFL
 Authors: Flavien Bardyn & Martin Savary
@@ -24,13 +23,9 @@ Good luck and have fun!
 #include "display.h"
 
 // Callback funtcion of the accelerometer
-static void accel_data_handler(AccelData * Data, uint32_t num_samples)
-{
+static void accel_data_handler(AccelData * Data, uint32_t num_samples) {
     data_acc_update_acc(Data);
 }
-
-
-
 
 // Init function called when app is launched
 static void init(void) {
