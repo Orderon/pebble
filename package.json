@@ -17,12 +17,6 @@
                     "type": "bitmap"
                 },
                 {
-                    "file": "images/images.png",
-                    "name": "mario2",
-                    "targetPlatforms": null,
-                    "type": "bitmap"
-                },
-                {
                     "file": "images/stop.png",
                     "name": "stop",
                     "targetPlatforms": null,
@@ -37,6 +31,12 @@
                 {
                     "file": "images/play-button.png",
                     "name": "play",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/images.png",
+                    "name": "mario2",
                     "targetPlatforms": null,
                     "type": "bitmap"
                 }

@@ -25,6 +25,7 @@ static uint16_t battery=24;
 static BitmapLayer *batterie;
 static BitmapLayer *batterie_end;
 static BitmapLayer *batterie_start;
+static bool deja_aff = 0;
 
 
 //////// BUTTON //////////
@@ -38,6 +39,7 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 void up_click_handler(ClickRecognizerRef recognizer, void *context) {
  // ... called on single click up...
     counter = 0;
+  deja_aff = 0;
   APP_LOG(APP_LOG_LEVEL_ERROR, "replay");
 }
 
@@ -237,8 +239,9 @@ void update_counter(int add){
     GRect start = GRect(30, 50, 60, 60);
     animate_layer(s_layer, &start, &finish, 300);  
   }
-  if (counter==10){
+  if (counter>=100 && counter<=15 && !deja_aff){
     dialog_message_window_push();
+    deja_aff = 1;
   }
    //APP_LOG(APP_LOG_LEVEL_DEBUG, "update2");
   draw_battery();
@@ -249,7 +252,7 @@ void update_counter(int add){
   snprintf(dist,60,"Distance: %d", (int)distance);
   text_layer_set_text(s_textlayer_3,dist);
   
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", stop);
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", stop);
   
 }
 

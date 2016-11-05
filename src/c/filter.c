@@ -83,10 +83,10 @@ int findPeaks(double fnfacc[7+NSAMPLES], double moy){
     if(delta_i<0)
       delta_i += 6+NSAMPLES;
       //if the middle value is higher than the two others, then add a peak && (last_temp<3000000)&& (last_temp > moy/5) 
-     if(last_temp>(llast_temp) && last_temp>(temp) && (last_temp > 1350)&& (delta_i>3))
+     if(last_temp>(llast_temp+5) && last_temp>(temp+5) && (last_temp > 1250) && (delta_i>8))
       {
          result += 1;
-       APP_LOG(APP_LOG_LEVEL_DEBUG, "%d %d",(int)(ilastpeak), i);
+       //APP_LOG(APP_LOG_LEVEL_DEBUG, "%d %d",(int)(ilastpeak), i);
          ilastpeak = i;
       }
   }

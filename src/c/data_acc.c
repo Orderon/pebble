@@ -32,8 +32,8 @@ void data_acc_init(void)
     //j : permet de sélectionner l'axe (j = 0 -> X, 1 -> Y, 2 -> Z)
     for (j=0;j<=2;j++)
     {
-      Acc[j].acc[i] = 0;
-      Acc[j].acc_filt[i] = 0;
+      Acc[j].acc[i] = 577;
+      Acc[j].acc_filt[i] = 577;
     }
   }
 }
@@ -43,11 +43,11 @@ void data_norm_init(void)
   int i = 0;
   for (i=0;i<=6;i++)
   {
-    Norm.norm[i] = 0;
-    Norm.norm_filt[i] = 0;
+    Norm.norm[i] = 1000;
+    Norm.norm_filt[i] = 1000;
   }
   for (i=7;i <= NSAMPLES + 5;i++)
-    Norm.norm_filt[i] = 0;
+    Norm.norm_filt[i] = 1000;
 }
 
 // Cette fonction permet de garder en mémoire les valeurs précédentes des accélérations / normes, nécessaires pour le filtrage.
@@ -65,7 +65,7 @@ void data_acc_update_acc(AccelData * Data)
 {
   static int step = 0;
   int i = 0;
-  static double last_norm_filt[7] = {0,0,0,0,0,0,0};
+  static double last_norm_filt[7] = {1000,1000,1000,1000,1000,1000,1000};
   // Décalage des normes avant d'enregistrer les nouvelles.
   data_norm_decalage();
   double moy = 0;
@@ -88,7 +88,8 @@ void data_acc_update_acc(AccelData * Data)
     Norm.norm_filt[i + 6] = filter_lowpass(i, Norm.norm, last_norm_filt);
     last_norm_filt[i%7] = Norm.norm_filt[i + 6];
     moy += Norm.norm_filt[i + 6];
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "%d",(int)(Norm.norm_filt[i+6]));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "%d",(int)(Norm.norm_filt[i+6]));
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "%d",(int)(Data[i].x));
   } 
   moy /= NSAMPLES;
   update_counter(findPeaks(Norm.norm_filt, moy));
