@@ -1,3 +1,10 @@
+/*---------------------------------------------------------------------------
+display.h
+Authors: Lucie Houel, Cyrill Baumann
+Version: 1.0
+Date: 06.11.2016
+---------------------------------------------------------------------------*/
+
 #pragma once
   /*Handler des boutons, permettent de changer la valeur de stop: 
 une fois stop à 1, on ne compte plus les pas et l'animation stoppe */

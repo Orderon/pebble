@@ -1,19 +1,8 @@
 /*---------------------------------------------------------------------------
-Template for TP of the course "System Engineering" 2016, EPFL
-Authors: Flavien Bardyn & Martin Savary
+main.c
+Authors: Thomas Triquet, Cyrill Baumann
 Version: 1.0
-Date: 10.08.2016
-Use this "HelloWorld" example as basis to code your own app, which should at least 
-count steps precisely based on accelerometer data. 
-- Add the accelerometer data acquisition
-- Implement your own pedometer using these data
-- (Add an estimation of the distance travelled)
-- Make an effort on the design of the app, try to do something fun!
-- Comment and indent your code properly!
-- Try to use your imagination and not google (we already did it, and it's disappointing!)
-  to offer us a smart and original solution of pedometer
-Don't hesitate to ask us questions.
-Good luck and have fun!
+Date: 06.11.2016
 ---------------------------------------------------------------------------*/
 
 // Include Pebble library
@@ -44,17 +33,14 @@ static void init(void) {
   
     // Show the user Interface display
     show_display();
-  
-    // Add a logging meassage (for debug)
-	  APP_LOG(APP_LOG_LEVEL_DEBUG, "Just write my first app!");
-}
+  }
 
 // deinit function called when the app is closed
 static void deinit(void) {
   
     // Destroy layers and main window 
-
     window_deinit();
+  
     // Stop accelerometer
     accel_data_service_unsubscribe();
 }

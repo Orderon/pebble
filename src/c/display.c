@@ -1,3 +1,10 @@
+/*---------------------------------------------------------------------------
+display.c
+Authors: Lucie Houel, Cyrill Baumann
+Version: 1.0
+Date: 06.11.2016
+---------------------------------------------------------------------------*/
+
 #include <pebble.h>
 #include "display.h"
 #include "animation.h"
@@ -38,17 +45,14 @@ int stop=0;
 une fois stop à 1, on ne compte plus les pas et l'animation stoppe */
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
     stop = 0;
-  APP_LOG(APP_LOG_LEVEL_ERROR, "play");
   
 }
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
     counter = 0;
   deja_aff = 0;
-  APP_LOG(APP_LOG_LEVEL_ERROR, "replay");
 }
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {  
   stop = 1;
-  APP_LOG(APP_LOG_LEVEL_ERROR, "stop");
 }
   /* soubscription aux event bouton */
 static void click_config_provider(void *context) {

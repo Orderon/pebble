@@ -1,3 +1,10 @@
+/*---------------------------------------------------------------------------
+animation.c
+Authors: Lucie Houel
+Version: 1.0
+Date: 06.11.2016
+---------------------------------------------------------------------------*/
+
 #include <pebble.h>
 #include "animation.h"
 
@@ -8,7 +15,6 @@ static void anim_started_handler(Animation *animation, void *context) {
 }
 
 static void anim_stopped_handler(Animation *animation, bool finished, void *context) {
- // APP_LOG(APP_LOG_LEVEL_DEBUG, "Animation stopped!");
    animation_destroy(animation);
 }
  
