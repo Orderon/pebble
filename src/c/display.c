@@ -49,7 +49,8 @@ static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
 }
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
     counter = 0;
-  deja_aff = 0;
+    deja_aff = 0;
+    distance = 0;
 }
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {  
   stop = 1;

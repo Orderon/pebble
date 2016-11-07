@@ -10,9 +10,6 @@ Date: 06.11.2016
 #include "filter.h"
 #include "data_acc.h"
 #define DIST_PER_STEP 0.5
-static int n_steps;
-static double distance;
-  
 
 /*
 executes lowpass filter order 7
