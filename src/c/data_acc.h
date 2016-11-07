@@ -17,5 +17,6 @@ void data_acc_init(void);
 // Initialisation des normes à 0.
 void data_norm_init(void);
 
-// Enregistrement des nouvelles accélérations tout en enregistrant les anciennes nécessaires pour le filtrage
+/* Enregistrement des nouvelles accélérations tout en enregistrant les anciennes nécessaires pour le filtrage.
+   Appelle également findPeaks pour compter le nombre de pas détecté.                                         */
 void data_acc_update_acc(AccelData * Data);

@@ -34,4 +34,4 @@ function should be called to evaluate consecutive data sets not undependent ones
 Inputs: double fnfacc[7+NSAMPLES]: most recent filtered data
         double moy: mean of the last 7+NSAMPLES samples
 Output: int result: number of peaks found*/
-int findPeaks(double fnfacc[12+NSAMPLES], double moy);
+int findPeaks(double fnfacc[12+NSAMPLES]);

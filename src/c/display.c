@@ -223,7 +223,6 @@ void window_deinit(){
 /* Update the number of steps if !stop and schedule the background animation.
 When the number of steps is 10000 (but here 100 in order to maj-ke it visible rapidly) it pushes the message "wow ! you ran 10000 steps" */
 void update_counter(int add){
-  // APP_LOG(APP_LOG_LEVEL_DEBUG, "update");
   if (!stop){
     counter += add;
     distance = counter*0.70;
@@ -231,21 +230,17 @@ void update_counter(int add){
     GRect start = GRect(30, 50, 60, 60);
     animate_layer(s_layer, &start, &finish, 300);  
   }
-  if (counter>=100 && counter<=15 && !deja_aff){
+  if (counter>=10 && counter<=15 && !deja_aff){
     dialog_message_window_push();
     deja_aff = 1;
   }
-   //APP_LOG(APP_LOG_LEVEL_DEBUG, "update2");
   draw_battery();
   static char counter_text[60];
   snprintf(counter_text,60, "Steps: %d",counter);
   text_layer_set_text(s_textlayer_2,counter_text);
   static char dist[60];
   snprintf(dist,60,"Distance: %d", (int)distance);
-  text_layer_set_text(s_textlayer_3,dist);
-  
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "%d", stop);
-  
+  text_layer_set_text(s_textlayer_3,dist); 
 }
 
 //////////// Gather the 'init' and 'deinit' functions  //////////////
