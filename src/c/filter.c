@@ -78,7 +78,7 @@ int findPeaks(double fnfacc[7+NSAMPLES]){
     
     //if the middle value is higher than the two others, then add a peak. Further filtering of noise through minimal threshold between the 3 values.
     //as well as a general threshhold of the needed acceleration and a minimal distance in time between two consecutive peaks
-     if(last_temp>(llast_temp+10) && last_temp>(temp+10) && (last_temp > 1300) && (delta_i>7))
+     if(last_temp>(llast_temp+12) && last_temp>(temp+12) && (last_temp > 1350) && (delta_i>7))
       {
          result += 1;
          ilastpeak = i;
